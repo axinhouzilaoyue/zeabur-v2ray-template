@@ -20,7 +20,7 @@ spec:
   services:
     - name: v2ray
       icon: https://raw.githubusercontent.com/2dust/v2rayN/refs/heads/master/v2rayN/v2rayN/Resources/v2rayN.ico
-      template: PREBUILT_V2
+      template: PREBUILT
       spec:
         source:
           image: teddysun/xray:latest
@@ -61,9 +61,11 @@ spec:
 
     - name: nginx
       icon: https://www.svgrepo.com/show/373924/nginx.svg
-      template: PREBUILT_V2
-      domainKey: DOMAIN
+      template: PREBUILT
       spec:
+        domainKey: DOMAIN
+        dependsOn:
+          - v2ray
         source:
           image: nginx:alpine
         ports:
