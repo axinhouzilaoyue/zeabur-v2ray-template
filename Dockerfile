@@ -7,15 +7,14 @@ RUN apk add --no-cache nginx curl \
     && mv /tmp/sing-box-*/sing-box /usr/local/bin/ \
     && rm -rf /tmp/sing-box* \
     && chmod +x /usr/local/bin/sing-box \
-    && mkdir -p /etc/sing-box
+    && mkdir -p /etc/sing-box /run/nginx
 
-# 复制配置
-COPY nginx.conf /etc/nginx/http.d/default.conf
+# 复制配置 - 直接覆盖主配置
+COPY nginx.conf /etc/nginx/nginx.conf
 COPY config.json /etc/sing-box/config.json
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Zeabur 需要这个端口
 EXPOSE 80
 
 CMD ["/entrypoint.sh"]
