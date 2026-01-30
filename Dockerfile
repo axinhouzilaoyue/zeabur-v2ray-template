@@ -1,19 +1,18 @@
 FROM alpine:latest
 
-# 安装 sing-box
-RUN apk add --no-cache curl \
-    && curl -Lo /tmp/sing-box.tar.gz https://github.com/SagerNet/sing-box/releases/download/v1.12.18/sing-box-1.12.18-linux-amd64.tar.gz \
-    && tar -xzf /tmp/sing-box.tar.gz -C /tmp \
-    && mv /tmp/sing-box-*/sing-box /usr/local/bin/ \
-    && rm -rf /tmp/sing-box* \
-    && chmod +x /usr/local/bin/sing-box \
-    && mkdir -p /etc/sing-box
+# 安装 nginx 和 v2ray
+RUN apk add --no-cache nginx curl unzip \
+    && curl -Lo /tmp/v2ray.zip https://github.com/v2fly/v2ray-core/releases/latest/download/v2ray-linux-64.zip \
+    && unzip /tmp/v2ray.zip -d /usr/local/bin \
+    && rm /tmp/v2ray.zip \
+    && mkdir -p /etc/v2ray /run/nginx /usr/share/nginx/html
 
-COPY config.json /etc/sing-box/config.json
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY config.json /etc/v2ray/config.json
+COPY index.html /usr/share/nginx/html/index.html
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# 使用 TCP 端口
-EXPOSE 443
+EXPOSE 80
 
 CMD ["/entrypoint.sh"]

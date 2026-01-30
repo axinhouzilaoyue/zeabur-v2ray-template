@@ -1,25 +1,27 @@
 {
-  "log": {
-    "level": "info"
-  },
   "inbounds": [
     {
-      "type": "vmess",
-      "tag": "vmess-in",
-      "listen": "0.0.0.0",
-      "listen_port": 443,
-      "users": [
-        {
-          "uuid": "${UUID}",
-          "alterId": 0
+      "port": 1080,
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "id": "${UUID}",
+            "alterId": 0
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "path": "/ws"
         }
-      ]
+      }
     }
   ],
   "outbounds": [
     {
-      "type": "direct",
-      "tag": "direct"
+      "protocol": "freedom"
     }
   ]
 }
