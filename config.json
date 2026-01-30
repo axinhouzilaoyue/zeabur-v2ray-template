@@ -1,23 +1,19 @@
 {
   "log": {
-    "level": "debug"
+    "level": "info"
   },
   "inbounds": [
     {
       "type": "vmess",
       "tag": "vmess-in",
       "listen": "0.0.0.0",
-      "listen_port": 80,
+      "listen_port": 443,
       "users": [
         {
           "uuid": "${UUID}",
           "alterId": 0
         }
-      ],
-      "transport": {
-        "type": "httpupgrade",
-        "path": "/ws"
-      }
+      ]
     }
   ],
   "outbounds": [

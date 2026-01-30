@@ -25,5 +25,5 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-echo "Starting sing-box on port 80..."
+echo "Starting sing-box on port 443 (TCP)..."
 exec /usr/local/bin/sing-box run -c /etc/sing-box/config.json

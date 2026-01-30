@@ -13,6 +13,7 @@ COPY config.json /etc/sing-box/config.json
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-EXPOSE 80
+# 使用 TCP 端口
+EXPOSE 443
 
 CMD ["/entrypoint.sh"]
