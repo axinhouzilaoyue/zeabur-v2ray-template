@@ -1,12 +1,12 @@
 {
   "log": {
-    "level": "info"
+    "level": "debug"
   },
   "inbounds": [
     {
       "type": "vmess",
       "tag": "vmess-in",
-      "listen": "::",
+      "listen": "0.0.0.0",
       "listen_port": 80,
       "users": [
         {
@@ -16,9 +16,7 @@
       ],
       "transport": {
         "type": "ws",
-        "path": "/ws",
-        "max_early_data": 2048,
-        "early_data_header_name": "Sec-WebSocket-Protocol"
+        "path": "/ws"
       }
     }
   ],

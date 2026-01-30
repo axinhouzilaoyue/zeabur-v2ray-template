@@ -9,7 +9,8 @@
       "Bash(curl:*)",
       "Bash(docker build:*)",
       "Bash(gh run list:*)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "WebSearch"
     ]
   }
 }
