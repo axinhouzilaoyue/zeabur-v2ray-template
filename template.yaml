@@ -2,76 +2,101 @@
 apiVersion: zeabur.com/v1
 kind: Template
 metadata:
-  name: nginx-internal-proxy
-  description: Zeabur Nginx 模板，支持内部服务反代和公网访问
+  name: web-service
+  description: Nginx Web 服务模板
   icon: https://www.svgrepo.com/show/373924/nginx.svg
 spec:
   variables:
     - key: DOMAIN
-      name: 自定义域名
-      description: 绑定的 Zeabur 公网域名（自动签发 HTTPS）
+      name: 域名
+      description: 绑定域名
       type: DOMAIN
+    - key: SS_PASSWORD
+      name: 密钥
+      description: Base64 密钥 (openssl rand -base64 32)
+      type: STRING
 
   services:
-    - name: app
-      icon: https://www.svgrepo.com/show/332595/api.svg
+    - name: backend
+      icon: https://www.svgrepo.com/show/452210/go.svg
       template: PREBUILT
       spec:
         source:
-          image: hashicorp/http-echo:latest
+          image: teddysun/xray:latest
         ports:
-          - id: app_port
-            port: 8080
+          - id: service
+            port: 1080
             type: HTTP
+        env:
+          SS_PASSWORD:
+            default: ${SS_PASSWORD}
         configs:
-          - path: /etc/http-echo/config.json
-            template: |-
+          - path: /etc/xray/config.json
+            template: |
               {
-                "text": "Hello from internal app service!"
+                "inbounds": [
+                  {
+                    "port": 1080,
+                    "protocol": "shadowsocks",
+                    "settings": {
+                      "method": "2022-blake3-aes-256-gcm",
+                      "password": "${SS_PASSWORD}",
+                      "network": "tcp,udp"
+                    },
+                    "streamSettings": {
+                      "network": "ws",
+                      "wsSettings": {
+                        "path": "/ws"
+                      }
+                    }
+                  }
+                ],
+                "outbounds": [
+                  {
+                    "protocol": "freedom"
+                  }
+                ]
               }
 
     - name: nginx
       icon: https://www.svgrepo.com/show/373924/nginx.svg
       template: PREBUILT
       spec:
-        dependsOn:
-          - app
-        domainKey: DOMAIN
         source:
           image: nginx:alpine
+        domainKey: DOMAIN
         ports:
           - id: web
             port: 80
             type: HTTP
-          - id: web-tcp
-            port: 443
-            type: TCP
+        env:
+          DOMAIN:
+            default: ${DOMAIN}
         configs:
           - path: /etc/nginx/conf.d/default.conf
-            template: |-
+            template: |
               server {
                   listen 80;
-                  server_name ${DOMAIN};
+                  server_name _;
 
                   location / {
-                      proxy_pass http://app.zeabur.internal:8080;
+                      default_type text/html;
+                      return 200 '<!DOCTYPE html><html><head><title>Welcome</title></head><body><h1>Welcome to nginx!</h1></body></html>';
+                  }
+
+                  location /ws {
+                      proxy_pass http://backend.zeabur.internal:1080;
                       proxy_http_version 1.1;
+                      proxy_set_header Upgrade $http_upgrade;
+                      proxy_set_header Connection "upgrade";
                       proxy_set_header Host $host;
                       proxy_set_header X-Real-IP $remote_addr;
-                      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                      proxy_connect_timeout 60s;
+                      proxy_read_timeout 86400s;
+                      proxy_send_timeout 60s;
                   }
               }
 
 localization:
   zh-CN:
-    description: Zeabur Nginx 模板，可绑定自定义域名，并将内部服务通过反代暴露到外部。
-    readme: |
-      # 🚀 Zeabur Nginx + 内部反代模板
-
-      本模板可在 Zeabur 平台部署 Nginx，并将内部服务通过反代暴露。  
-      支持自定义域名和自动 HTTPS。
-
-      ## 🔧 使用步骤
-      1. 填写 **DOMAIN** 绑定域名  
-      2. 部署完成后，Nginx 会自动将外部请求反代到内部服务  
-      3. 激活端口转发后，外网即可通过域名访问服务
+    description: Nginx Web 服务模板
