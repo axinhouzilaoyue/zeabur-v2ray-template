@@ -1,24 +1,25 @@
 {
   "inbounds": [
     {
-      "port": 1080,
-      "protocol": "shadowsocks",
-      "settings": {
-        "method": "2022-blake3-aes-256-gcm",
-        "password": "${SS_PASSWORD}",
-        "network": "tcp,udp"
+      "type": "shadowsocks",
+      "tag": "ss-in",
+      "listen": "127.0.0.1",
+      "listen_port": 1080,
+      "method": "2022-blake3-aes-256-gcm",
+      "password": "${SS_PASSWORD}",
+      "multiplex": {
+        "enabled": true
       },
-      "streamSettings": {
-        "network": "ws",
-        "wsSettings": {
-          "path": "/ws"
-        }
+      "transport": {
+        "type": "ws",
+        "path": "/ws"
       }
     }
   ],
   "outbounds": [
     {
-      "protocol": "freedom"
+      "type": "direct",
+      "tag": "direct"
     }
   ]
 }
