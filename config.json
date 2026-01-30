@@ -4,15 +4,16 @@
   },
   "inbounds": [
     {
-      "type": "shadowsocks",
-      "tag": "ss-in",
+      "type": "vmess",
+      "tag": "vmess-in",
       "listen": "127.0.0.1",
       "listen_port": 1080,
-      "method": "2022-blake3-aes-256-gcm",
-      "password": "${SS_PASSWORD}",
-      "multiplex": {
-        "enabled": true
-      },
+      "users": [
+        {
+          "uuid": "${UUID}",
+          "alterId": 0
+        }
+      ],
       "transport": {
         "type": "ws",
         "path": "/ws"

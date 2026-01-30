@@ -1,15 +1,18 @@
-# Nginx Web Service
+# Web Service
 
-## 一键部署
+## 部署
 
 1. 在 [Zeabur](https://zeabur.com) 创建项目
-2. 点击 **Add Service** → **Git** → 选择此仓库
-3. 添加环境变量 `SS_PASSWORD`（运行 `openssl rand -base64 32` 生成）
-4. 绑定域名
-5. 完成
+2. **Add Service** → **Docker 容器镜像**
+3. 镜像：`ghcr.io/axinhouzilaoyue/zeabur-v2ray-template:latest`
+4. 环境变量：`UUID` = 生成的 UUID
+5. 端口：`80` / `HTTP`
+6. 绑定域名
 
-## 生成密钥
+## 生成 UUID
 
 ```bash
-openssl rand -base64 32
+uuidgen
 ```
+
+或访问 https://www.uuidgenerator.net/
