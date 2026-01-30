@@ -6,8 +6,8 @@
     {
       "type": "vmess",
       "tag": "vmess-in",
-      "listen": "127.0.0.1",
-      "listen_port": 1080,
+      "listen": "::",
+      "listen_port": 80,
       "users": [
         {
           "uuid": "${UUID}",
@@ -16,7 +16,9 @@
       ],
       "transport": {
         "type": "ws",
-        "path": "/ws"
+        "path": "/ws",
+        "max_early_data": 2048,
+        "early_data_header_name": "Sec-WebSocket-Protocol"
       }
     }
   ],
